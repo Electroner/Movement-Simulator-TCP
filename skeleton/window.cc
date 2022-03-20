@@ -31,15 +31,14 @@ _window::_window()
 
   QFrame *Framed_widget= new QFrame(Central_widget);
   Framed_widget->setSizePolicy(Q);
-  Framed_widget->setFrameStyle(QFrame::Panel);
-  Framed_widget->setLineWidth(3);
-
+  //Framed_widget->setFrameStyle(QFrame::Panel);
+  Framed_widget->setLineWidth(0);
 
   GL_widget = new _gl_widget(this);
   GL_widget->setSizePolicy(Q);
 
   QHBoxLayout *Horizontal_frame = new QHBoxLayout();
-  Horizontal_frame->setContentsMargins(1,1,1,1);
+  Horizontal_frame->setContentsMargins(0,0,0,0);
 
   Horizontal_frame->addWidget(GL_widget);
   Framed_widget->setLayout(Horizontal_frame);
@@ -48,19 +47,19 @@ _window::_window()
 
   Horizontal_main->addWidget(Framed_widget);
 
-  Central_widget->setLayout(Horizontal_main);
+  //Central_widget->setLayout(Horizontal_main);
   setCentralWidget(Central_widget);
 
-  // actions for file menu
+ /* // actions for file menu
   QAction *Exit = new QAction(QIcon("./icons/exit.png"), tr("&Exit..."), this);
   Exit->setShortcut(tr("Ctrl+Q"));
   Exit->setToolTip(tr("Exit the application"));
-  connect(Exit, SIGNAL(triggered()), this, SLOT(close()));
+  connect(Exit, SIGNAL(triggered()), this, SLOT(close()));*/
 
   // menus
-  QMenu *File_menu=menuBar()->addMenu(tr("&File"));
+  /*QMenu *File_menu=menuBar()->addMenu(tr("&File"));
   File_menu->addAction(Exit);
-  File_menu->setAttribute(Qt::WA_AlwaysShowToolTips);
+  File_menu->setAttribute(Qt::WA_AlwaysShowToolTips);*/
 
   setWindowTitle(tr("Práctica 5"));
   

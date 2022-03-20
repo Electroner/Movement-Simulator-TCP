@@ -7,7 +7,7 @@ class _Cilindro:public _revOBJ{
 
     public:
         _Cilindro();
-        _Cilindro(int n);
+        explicit _Cilindro(int n);
 
 };
 

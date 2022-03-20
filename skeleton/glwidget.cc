@@ -1,11 +1,3 @@
-/*! \file
- * Copyright Domingo Martín Perandres
- * email: dmartin@ugr.es
- * web: http://calipso.ugr.es/dmartin
- * 2003-2019
- * GPL 3
- */
-
 #include "glwidget.h"
 #include "materials.h"
 #include "window.h"
@@ -14,24 +6,11 @@ using namespace std;
 using namespace _gl_widget_ne;
 using namespace _colors_ne;
 
-/*****************************************************************************/ /**
-																				 *
-																				 *
-																				 *
-																				 *****************************************************************************/
-
 _gl_widget::_gl_widget(_window *Window1) : Window(Window1)
 {
 	setMinimumSize(300, 300);
 	setFocusPolicy(Qt::StrongFocus);
 }
-
-/*****************************************************************************/ /**
-																				 * Evento tecla pulsada
-																				 *
-																				 *
-																				 *
-																				 *****************************************************************************/
 
 void _gl_widget::keyPressEvent(QKeyEvent *Keyevent)
 {
@@ -108,12 +87,12 @@ void _gl_widget::keyPressEvent(QKeyEvent *Keyevent)
 		break;
 	case Qt::Key_PageUp:
 		Observer_distance *= 1.2;
-		if(reduction < 0.2)
+		if (reduction < 0.2)
 			reduction += 0.01;
 		break;
 	case Qt::Key_PageDown:
 		Observer_distance /= 1.2;
-		if(reduction > 0.01)
+		if (reduction > 0.01)
 			reduction -= 0.01;
 		break;
 
@@ -140,7 +119,7 @@ void _gl_widget::keyPressEvent(QKeyEvent *Keyevent)
 		break;
 
 	case Qt::Key_Y:
-		Draw_axis != Draw_axis;
+		Draw_axis = !Draw_axis;
 		break;
 
 	case Qt::Key_Z:
@@ -163,6 +142,10 @@ void _gl_widget::keyPressEvent(QKeyEvent *Keyevent)
 		exit(0);
 		break;
 
+	case Qt::Key_F:
+		// screenshot(Window_height,Window_width,"ZZZZZ.png");
+		break;
+
 	case Qt::Key_M:
 		QStringList items;
 		items << tr("PEARL") << tr("BRASS") << tr("RUBY") << tr("LIME");
@@ -175,7 +158,6 @@ void _gl_widget::keyPressEvent(QKeyEvent *Keyevent)
 		}
 		material = itemLabel;
 		break;
-
 	}
 	update();
 }
@@ -245,50 +227,29 @@ void _gl_widget::wheelEvent(QWheelEvent *Event)
 	update();
 }
 
-/*****************************************************************************/ /**
-																				 * Limpiar ventana
-																				 *
-																				 *
-																				 *
-																				 *****************************************************************************/
-
 void _gl_widget::clear_window()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-
-/*****************************************************************************/ /**
-																				 * Funcion para definir la transformación de proyeccion
-																				 *
-																				 *
-																				 *
-																				 *****************************************************************************/
 
 void _gl_widget::change_projection()
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	float Aspect=(float)Window_height/(float)Window_width;
+	float Aspect = (float)Window_height / (float)Window_width;
 
 	// formato(x_minimo,x_maximo, y_minimo, y_maximo,Front_plane, plano_traser)
 	// Front_plane>0  Back_plane>PlanoDelantero)
 	if (perspective)
 	{
-		glFrustum(X_MIN, X_MAX, Y_MIN*Aspect, Y_MAX*Aspect, FRONT_PLANE_PERSPECTIVE, BACK_PLANE_PERSPECTIVE*5);
+		glFrustum(X_MIN, X_MAX, Y_MIN * Aspect, Y_MAX * Aspect, FRONT_PLANE_PERSPECTIVE, BACK_PLANE_PERSPECTIVE * 5);
 	}
 	else
 	{
 		glOrtho(X_MIN / reduction, X_MAX / reduction, Y_MIN / reduction, Y_MAX / reduction, FRONT_PLANE_PERSPECTIVE, BACK_PLANE_PERSPECTIVE);
 	}
 }
-
-/*****************************************************************************/ /**
-																				 * Funcion para definir la transformación de vista (posicionar la camara)
-																				 *
-																				 *
-																				 *
-																				 *****************************************************************************/
 
 void _gl_widget::change_observer()
 {
@@ -299,13 +260,6 @@ void _gl_widget::change_observer()
 	glRotatef(Observer_angle_x, 1, 0, 0);
 	glRotatef(Observer_angle_y, 0, 1, 0);
 }
-
-/*****************************************************************************/ /**
-																				 * Funcion que dibuja los objetos
-																				 *
-																				 *
-																				 *
-																				 *****************************************************************************/
 
 void _gl_widget::draw_objects()
 {
@@ -640,7 +594,7 @@ void _gl_widget::draw_objects()
 		case OBJECT_RUEDA_EJE:
 			rueda_eje.draw_lighted_flat_shading();
 			break;
-		
+
 		case OBJECT_CHESS_BOARD:
 			chess_board.draw_lighted_flat_shading();
 			break;
@@ -713,7 +667,7 @@ void _gl_widget::draw_objects()
 		case OBJECT_RUEDA_EJE:
 			rueda_eje.draw_lighted_smooth_shading();
 			break;
-		
+
 		case OBJECT_CHESS_BOARD:
 			chess_board.draw_lighted_smooth_shading();
 			break;
@@ -810,13 +764,6 @@ void _gl_widget::draw_objects()
 	}
 }
 
-/*****************************************************************************/ /**
-																				 * Evento de dibujado
-																				 *
-																				 *
-																				 *
-																				 *****************************************************************************/
-
 void _gl_widget::paintGL()
 {
 	clear_window();
@@ -825,19 +772,12 @@ void _gl_widget::paintGL()
 	draw_objects();
 }
 
-/*****************************************************************************/ /**
-																				 * Evento de cambio de tamaño de la ventana
-																				 *
-																				 *
-																				 *
-																				 *****************************************************************************/
-
 void _gl_widget::resizeGL(int Width1, int Height1)
 {
-	Window_width=Width1;
-  	Window_height=Height1;
+	Window_width = Width1;
+	Window_height = Height1;
 
-	glViewport(0,0,Width1,Height1);
+	glViewport(0, 0, Width1, Height1);
 }
 
 void _gl_widget::build_lights()
@@ -849,14 +789,14 @@ void _gl_widget::build_lights()
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		// glLoadIdentity();
-		//GLfloat light_ambient[] = {1.0, 1.0, 1.0};
+		// GLfloat light_ambient[] = {1.0, 1.0, 1.0};
 		GLfloat light_position[] = {1.0, 1.0, 1.0, 0.0};
 		GLfloat light_diffuse[] = {0.7, 0.7, 0.7, 0.7};
 		GLfloat light_specular[] = {0.3, 0.3, 0.3, 0.3};
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 		glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-		//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+		// glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 		glPopMatrix();
 	}
 	else
@@ -870,7 +810,7 @@ void _gl_widget::build_lights()
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		// glLoadIdentity();
-		//GLfloat light_ambient1[] = {1.0, 1.0, 1.0};
+		// GLfloat light_ambient1[] = {1.0, 1.0, 1.0};
 		GLfloat light_position1[] = {-1.0, -1.0, -1.0, 0.0};
 		GLfloat light_diffuse1[] = {0.0, 0.8, 0.3, 0.2};
 		GLfloat light_specular1[] = {0.1, 0.0, 0.3, 1.0};
@@ -880,21 +820,23 @@ void _gl_widget::build_lights()
 		glPopMatrix();
 		glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse1);
 		glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular1);
-		//glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient1);
+		// glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient1);
 		glPopMatrix();
 	}
 	else
 	{
 		glDisable(GL_LIGHT1);
 	}
-	if(light0_enabled || light1_enabled){
+	if (light0_enabled || light1_enabled)
+	{
 		glEnable(GL_LIGHTING);
 		GLfloat light_ambient[] = {1.0, 1.0, 1.0};
 		glLightfv(GL_LIGHTING, GL_AMBIENT, light_ambient);
-	}else{
+	}
+	else
+	{
 		glDisable(GL_LIGHTING);
 	}
-
 }
 
 void _gl_widget::build_material(string _material)
@@ -904,8 +846,8 @@ void _gl_widget::build_material(string _material)
 		glPushMatrix();
 		glMaterialfv(GL_FRONT, GL_AMBIENT, (GLfloat *)&NewMaterialsAmbient::PEARL);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, (GLfloat *)&NewMaterialsDiffuse::PEARL);
-		glMaterialfv(GL_FRONT, GL_SPECULAR,(GLfloat *)&NewMaterialsSpecular::PEARL);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS,(GLfloat *)&NewMaterialsShininess::PEARL);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat *)&NewMaterialsSpecular::PEARL);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat *)&NewMaterialsShininess::PEARL);
 		glPopMatrix();
 	}
 	if (_material == "BRASS")
@@ -913,8 +855,8 @@ void _gl_widget::build_material(string _material)
 		glPushMatrix();
 		glMaterialfv(GL_FRONT, GL_AMBIENT, (GLfloat *)&NewMaterialsAmbient::BRASS);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, (GLfloat *)&NewMaterialsDiffuse::BRASS);
-		glMaterialfv(GL_FRONT, GL_SPECULAR,(GLfloat *)&NewMaterialsSpecular::BRASS);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS,(GLfloat *)&NewMaterialsShininess::BRASS);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat *)&NewMaterialsSpecular::BRASS);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat *)&NewMaterialsShininess::BRASS);
 		glPopMatrix();
 	}
 	if (_material == "RUBY")
@@ -923,7 +865,7 @@ void _gl_widget::build_material(string _material)
 		glMaterialfv(GL_FRONT, GL_AMBIENT, (GLfloat *)&NewMaterialsAmbient::RUBY);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, (GLfloat *)&NewMaterialsDiffuse::RUBY);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat *)&NewMaterialsSpecular::RUBY);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS,(GLfloat *)&NewMaterialsShininess::RUBY);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat *)&NewMaterialsShininess::RUBY);
 		glPopMatrix();
 	}
 	if (_material == "LIME")
@@ -932,7 +874,7 @@ void _gl_widget::build_material(string _material)
 		glMaterialfv(GL_FRONT, GL_AMBIENT, (GLfloat *)&NewMaterialsAmbient::LIME);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, (GLfloat *)&NewMaterialsDiffuse::LIME);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat *)&NewMaterialsSpecular::LIME);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS,(GLfloat *)&NewMaterialsShininess::LIME);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat *)&NewMaterialsShininess::LIME);
 		glPopMatrix();
 	}
 }
@@ -952,9 +894,23 @@ void _gl_widget::set_animation()
 // FUNCION ASOCIADA AL TIMER PARA LA ANIMACION
 void _gl_widget::tick()
 {
+	valread = read(new_socket, buffer, 1024);
+	if (buffer[0] == 'y')
+	{
+		Draw_axis = !Draw_axis;
+		buffer[0] = 0;
+	}
+
 	if (light1_enabled)
 	{
-		angle_ligth = (angle_ligth < 360) ? angle_ligth += 5 : angle_ligth = 0;
+		if ((angle_ligth < 360))
+		{
+			angle_ligth += 0.5;
+		}
+		else
+		{
+			angle_ligth = 0;
+		}
 	}
 	Compass.update(animation_speed);
 	Arm.update(animation_speed);
@@ -1046,6 +1002,42 @@ void _gl_widget::initializeGL()
 	// Code to pass the image to OpenGL to form a texture 2D
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, Image.width(), Image.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, Image.bits());
 
-	Window_width=width();
-  	Window_height=height();
+	Window_width = width();
+	Window_height = height();
+
+	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+	{
+		perror("socket failed");
+		exit(EXIT_FAILURE);
+	}
+
+	// Forcefully attaching socket to the port 8080
+	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+	{
+		perror("setsockopt");
+		exit(EXIT_FAILURE);
+	}
+
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_port = htons(8080);
+
+	// Forcefully attaching socket to the port 8080
+	if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+	{
+		perror("bind failed");
+		exit(EXIT_FAILURE);
+	}
+	if (listen(server_fd, 3) < 0)
+	{
+		perror("listen");
+		exit(EXIT_FAILURE);
+	}
+	if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
+	{
+		perror("accept");
+		exit(EXIT_FAILURE);
+	}
+	fcntl(last_socket, F_SETFL, O_NONBLOCK);
+	fcntl(new_socket, F_SETFL, O_NONBLOCK);
 }

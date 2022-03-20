@@ -1,14 +1,13 @@
-/*! \file
- * Copyright Domingo Martín Perandres
- * email: dmartin@ugr.es
- * web: http://calipso.ugr.es/dmartin
- * 2003-2019
- * GPL 3
- */
-
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
+#include <stdio.h>
+#include <iostream>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <string.h>
+#include <fcntl.h>
 #include <GL/gl.h>
 #include <QOpenGLWidget>
 #include <QKeyEvent>
@@ -17,6 +16,7 @@
 #include <QImageReader>
 #include <iostream>
 #include <QInputDialog>
+
 #include "vertex.h"
 #include "colors.h"
 #include "axis.h"
@@ -103,6 +103,12 @@ public:
 
 	void set_animation();
 
+	int server_fd, new_socket, last_socket, valread;
+    struct sockaddr_in address;
+    int opt = 1;
+    int addrlen = sizeof(address);
+    char buffer[1024] = {0};
+
 protected:
 	void resizeGL(int Width1, int Height1) Q_DECL_OVERRIDE;
 	void paintGL() Q_DECL_OVERRIDE;
@@ -165,7 +171,7 @@ private:
 	bool light0_enabled;
 	bool light1_enabled;
 	string material;
-	int angle_ligth;
+	double angle_ligth;
 
 	bool perspective; //TRUE = PERSPECTIVE, FALSE = ORTHO
 	float reduction = 0.1;
@@ -177,7 +183,6 @@ private:
 
 	int Window_width;
   	int Window_height;
-
 };
 
 #endif

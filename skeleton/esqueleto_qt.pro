@@ -48,9 +48,9 @@ SOURCES += \
   Aarm.cc \
   Atip.cc  \
   Aend.cc \
-  Acompass.cc
+  Acompass.cc 
 
-LIBS += -L/usr/X11R6/lib64 -lGL
-
+LIBS += -L/usr/X11R6/lib64 -lGL -lpng -L/usr/local/lib -lfreetype
+INCLUDEPATH += "/usr/include/freetype2"
 CONFIG += c++11
 QT += widgets

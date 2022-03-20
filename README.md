@@ -1,2 +1,2 @@
-# PRACTICA 1 a 5 IG
-Practica de Carlos Lopez Martinez IG UGR 2021/2022.
+# Simulacion de brazo robot controlado a tiempo real por Telf Android
+Este proyecto se basa en el proyecto de IG de la universida para hacer el simulador a tiempo real.

@@ -17,3 +17,4 @@ inline float RevFuncitonFX(float _x)
 }
 
 #endif // FUNCTION_H
+                 

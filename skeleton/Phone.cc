@@ -68,12 +68,13 @@ void _Phone::draw_lighted_smooth_shading()
 
 void _Phone::update(float _accelerometer_x, float _accelerometer_y, float _accelerometer_z){
 
-	float temp_anglex = atan(_accelerometer_x/9.807)*(360/M_PI);
-	//atan((_accelerometer_y/9.81) / sqrt(pow((_accelerometer_x/9.81), 2) + pow((_accelerometer_z/9.81), 2))) * 180 / M_PI;
-	float temp_anglez = -atan(_accelerometer_y/9.807)*(360/M_PI);
-	//atan(-1*(_accelerometer_x/9.81) / sqrt(pow((_accelerometer_y/9.81), 2) + pow((_accelerometer_z/9.81), 2))) * 180 / M_PI;
+	//float temp_anglex = atan(_accelerometer_x/9.807)*(360/M_PI);
+	float temp_anglex = atan((_accelerometer_y/9.81) / sqrt(pow((_accelerometer_x/9.81), 2) + pow((_accelerometer_z/9.81), 2))) * 180 / M_PI;
+	//float temp_anglez = -atan(_accelerometer_y/9.807)*(360/M_PI);
+	float temp_anglez = atan(-1*(_accelerometer_x/9.81) / sqrt(pow((_accelerometer_y/9.81), 2) + pow((_accelerometer_z/9.81), 2))) * 180 / M_PI;
 	
 	//Low pass filter
 	anglex = 0.95*anglex + 0.05*temp_anglex;
 	anglez = 0.95*anglez + 0.05*temp_anglez;	
+
 }

@@ -949,12 +949,15 @@ void _gl_widget::tick()
 	}
 	if (!data.empty())
 	{
-		data.erase(std::remove(data.begin(), data.end(), '\n'), data.end());
+		//data.erase(std::remove(data.begin(), data.end(), '\n'), data.end());
 		accelerometer_x = atof(data.substr(0, data.find(",")).c_str());
 		data.erase(0, data.find(",") + 1);
+		
 		accelerometer_y = atof(data.substr(0, data.find(",")).c_str());
 		data.erase(0, data.find(",") + 1);
-		accelerometer_z = atof(data.c_str());
+		
+		accelerometer_z = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
 		//printf("%f\t %f\t %f\n", accelerometer_x, accelerometer_y, accelerometer_z);
 		send(new_socket, ACK, strlen(ACK), 0);
 	}

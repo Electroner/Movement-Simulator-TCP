@@ -5,7 +5,6 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
 #include <GL/gl.h>
@@ -17,6 +16,10 @@
 #include <QImage>
 #include <QImageReader>
 #include <QInputDialog>
+#include <unistd.h>
+#include <stdlib.h>
+#include <netinet/in.h>
+#include <thread>
 
 #include "vertex.h"
 #include "colors.h"
@@ -107,15 +110,18 @@ public:
 	void set_animation();
 	
 	void SetTCP();
+	void read_from_client();
 
 	int server_fd, new_socket, valread;
     struct sockaddr_in address;
     int opt = 1;
     int addrlen = sizeof(address);
-    char buffer[1024] = {0};
-	string data;
-
+    
 	const char *ACK = "ACKDAT\n";
+	char buffer[10240] = {0};
+	string data;
+	float sensordata[9];
+	unsigned long long tiempo;
 
 protected:
 	void resizeGL(int Width1, int Height1) Q_DECL_OVERRIDE;

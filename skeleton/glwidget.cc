@@ -2,6 +2,9 @@
 #include "materials.h"
 #include "window.h"
 
+#define PACKETEND '#'
+#define DATASEPARATOR ','
+
 using namespace std;
 using namespace _gl_widget_ne;
 using namespace _colors_ne;
@@ -898,7 +901,8 @@ void _gl_widget::set_animation()
 	}
 }
 
-void _gl_widget::SetTCP(){
+void _gl_widget::SetTCP()
+{
 	cout << "TCP: LISTO" << endl;
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
@@ -934,35 +938,133 @@ void _gl_widget::SetTCP(){
 	cout << "TCP: CONECTADO" << endl;
 	fcntl(new_socket, F_SETFL, O_NONBLOCK);
 }
+/*
+void _gl_widget::read_from_client()
+{
+	valread = read(new_socket, buffer, 1024);
+	data = buffer;
+	if (!data.empty())
+	{
+		sensordata[0] = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
+
+		sensordata[1] = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
+
+		sensordata[2] = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
+
+		sensordata[3] = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
+
+		sensordata[4] = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
+
+		sensordata[5] = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
+
+		sensordata[6] = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
+
+		sensordata[7] = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
+
+		sensordata[8] = atof(data.substr(0, data.find(",")).c_str());
+		data.erase(0, data.find(",") + 1);
+
+		tiempo = atof(data.c_str());
+
+		//printf("%f,%f,%f,%f,%f,%f,%f,%f,%f\n", sensordata[0], sensordata[1], sensordata[2], sensordata[3], sensordata[4], sensordata[5], sensordata[6], sensordata[7], sensordata[8]);
+
+		send(new_socket, ACK, strlen(ACK), 0);
+	}
+	data.clear();
+}
+*/
+
+inline unsigned long long getlasttime(std::string &data)
+{
+	std::size_t found;
+	unsigned long long last;
+
+	found = data.find_last_of(DATASEPARATOR);
+	if (found != std::string::npos)
+	{
+		last = std::strtoull((data.substr(found + 1, data.length() - found)).c_str(), NULL, 10);
+	}
+	else
+	{
+		last = std::strtoull(data.c_str(), NULL, 10);
+	}
+
+	found = data.find_last_of(DATASEPARATOR);
+	if (found != std::string::npos)
+	{
+		data.erase(found, data.length());
+	}
+
+	return last;
+}
+
+inline float getlast(std::string &data)
+{
+	std::size_t found;
+	float last;
+
+	found = data.find_last_of(DATASEPARATOR);
+	if (found != std::string::npos)
+	{
+		last = std::stof(data.substr(found + 1, data.length() - found));
+	}
+	else
+	{
+		last = std::stof(data);
+	}
+
+	found = data.find_last_of(DATASEPARATOR);
+	if (found != std::string::npos)
+	{
+		data.erase(found, data.length());
+	}
+
+	return last;
+}
+
+void _gl_widget::read_from_client()
+{
+	valread = read(new_socket, buffer, 1024);
+	data = buffer;
+	if (!data.empty())
+	{
+		std::cout << "-------------------- PACKET --------------------\n " << data << "\n-------------------- PACKET2 --------------------" <<  std::endl;
+		std::size_t found;
+		found = data.find_last_of(PACKETEND);
+		// Remove all the characters after the last #
+		if (found != std::string::npos)
+		{
+			data.erase(found, data.length());
+		}
+
+		tiempo = getlasttime(data);
+		sensordata[8] = getlast(data);
+		sensordata[7] = getlast(data);
+		sensordata[6] = getlast(data);
+		sensordata[5] = getlast(data);
+		sensordata[4] = getlast(data);
+		sensordata[3] = getlast(data);
+		sensordata[2] = getlast(data);
+		sensordata[1] = getlast(data);
+		sensordata[0] = getlast(data);
+
+		printf("\n\nsensordata: %f %f %f %f %f %f %f %f %f %lld\n\n", sensordata[0], sensordata[1], sensordata[2], sensordata[3], sensordata[4], sensordata[5], sensordata[6], sensordata[7], sensordata[8], tiempo);
+		//send(new_socket, ACK, strlen(ACK), 0);
+	}
+	data.clear();
+}
 
 // FUNCION ASOCIADA AL TIMER PARA LA ANIMACION
 void _gl_widget::tick()
 {
-	valread = read(new_socket, buffer, 1024);
-	for (int i = 0; i < 1024; i++)
-	{
-		if (buffer[i] != 0)
-		{
-			data = data + buffer[i];
-		}
-		buffer[i] = 0;
-	}
-	if (!data.empty())
-	{
-		//data.erase(std::remove(data.begin(), data.end(), '\n'), data.end());
-		accelerometer_x = atof(data.substr(0, data.find(",")).c_str());
-		data.erase(0, data.find(",") + 1);
-		
-		accelerometer_y = atof(data.substr(0, data.find(",")).c_str());
-		data.erase(0, data.find(",") + 1);
-		
-		accelerometer_z = atof(data.substr(0, data.find(",")).c_str());
-		data.erase(0, data.find(",") + 1);
-		//printf("%f\t %f\t %f\n", accelerometer_x, accelerometer_y, accelerometer_z);
-		send(new_socket, ACK, strlen(ACK), 0);
-	}
-	data.clear();
-
 	if (light1_enabled)
 	{
 		if ((angle_ligth < 360))
@@ -979,7 +1081,9 @@ void _gl_widget::tick()
 	End.update(animation_speed);
 	Tip.update(animation_speed);
 	Base.update(animation_speed);*/
-	Phone.update(accelerometer_x, accelerometer_y, accelerometer_z);
+
+	read_from_client();
+	Phone.update(sensordata);
 	update();
 }
 

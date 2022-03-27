@@ -29,7 +29,7 @@ public:
 	void draw_lighted_smooth_shading();
 	void draw_texture();
 
-    void update(float _angle_x, float _angle_y, float _angle_z);
+    void update(const float (&_sensors)[9]);
 };
 
 #endif

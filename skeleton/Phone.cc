@@ -77,9 +77,4 @@ void _Phone::update(const float (&_sensors)[9]){
 	anglex = 0.95*anglex + 0.05*temp_anglex;
 	anglez = 0.95*anglez + 0.05*temp_anglez;	
 
-	//high pass filter
-	anglex = 0.05*anglex + 0.95*temp_anglex;
-	anglez = 0.05*anglez + 0.95*temp_anglez;	
-
-
 }

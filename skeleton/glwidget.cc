@@ -938,7 +938,7 @@ void _gl_widget::SetTCP()
 	cout << "TCP: CONECTADO" << endl;
 	fcntl(new_socket, F_SETFL, O_NONBLOCK);
 }
-/*
+
 void _gl_widget::read_from_client()
 {
 	valread = read(new_socket, buffer, 1024);
@@ -977,87 +977,6 @@ void _gl_widget::read_from_client()
 		//printf("%f,%f,%f,%f,%f,%f,%f,%f,%f\n", sensordata[0], sensordata[1], sensordata[2], sensordata[3], sensordata[4], sensordata[5], sensordata[6], sensordata[7], sensordata[8]);
 
 		send(new_socket, ACK, strlen(ACK), 0);
-	}
-	data.clear();
-}
-*/
-
-inline unsigned long long getlasttime(std::string &data)
-{
-	std::size_t found;
-	unsigned long long last;
-
-	found = data.find_last_of(DATASEPARATOR);
-	if (found != std::string::npos)
-	{
-		last = std::strtoull((data.substr(found + 1, data.length() - found)).c_str(), NULL, 10);
-	}
-	else
-	{
-		last = std::strtoull(data.c_str(), NULL, 10);
-	}
-
-	found = data.find_last_of(DATASEPARATOR);
-	if (found != std::string::npos)
-	{
-		data.erase(found, data.length());
-	}
-
-	return last;
-}
-
-inline float getlast(std::string &data)
-{
-	std::size_t found;
-	float last;
-
-	found = data.find_last_of(DATASEPARATOR);
-	if (found != std::string::npos)
-	{
-		last = std::stof(data.substr(found + 1, data.length() - found));
-	}
-	else
-	{
-		last = std::stof(data);
-	}
-
-	found = data.find_last_of(DATASEPARATOR);
-	if (found != std::string::npos)
-	{
-		data.erase(found, data.length());
-	}
-
-	return last;
-}
-
-void _gl_widget::read_from_client()
-{
-	valread = read(new_socket, buffer, 1024);
-	data = buffer;
-	if (!data.empty())
-	{
-		std::cout << "-------------------- PACKET --------------------\n " << data << "\n-------------------- PACKET2 --------------------" <<  std::endl;
-		std::size_t found;
-		found = data.find_last_of(PACKETEND);
-		// Remove all the characters after the last #
-		if (found != std::string::npos)
-		{
-			data.erase(found, data.length());
-		}
-
-		tiempo = getlasttime(data);
-		sensordata[8] = getlast(data);
-		sensordata[7] = getlast(data);
-		sensordata[6] = getlast(data);
-		sensordata[5] = getlast(data);
-		sensordata[4] = getlast(data);
-		sensordata[3] = getlast(data);
-		sensordata[2] = getlast(data);
-		sensordata[1] = getlast(data);
-		sensordata[0] = getlast(data);
-
-		printf("\n\nsensordata: %f %f %f %f %f %f %f %f %f %lld\n\n", sensordata[0], sensordata[1], sensordata[2], sensordata[3], sensordata[4], sensordata[5], sensordata[6], sensordata[7], sensordata[8], tiempo);
-		//send(new_socket, ACK, strlen(ACK), 0);
 	}
 	data.clear();
 }
